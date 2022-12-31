@@ -9,13 +9,14 @@ FetchContent_MakeAvailable(SFML)
 
 # Project Build
 include_directories(src/cfd_lib/headers)
-add_library(cfd_lib src/cfd_lib/test.cpp)
+add_library(cfd_lib src/cfd_lib/container.cpp src/cfd_lib/physics.cpp)
 
 add_executable(cfd_physics src/main.cpp)
 target_link_libraries(cfd_physics PRIVATE cfd_lib)
 
 # Link SFML Dependency
 target_link_libraries(cfd_physics PRIVATE sfml-graphics)
+target_link_libraries(cfd_lib PRIVATE sfml-graphics)
 
 # Set Compiler up
 target_compile_features(cfd_physics PRIVATE cxx_std_20)

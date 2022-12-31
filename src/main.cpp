@@ -9,7 +9,7 @@
 #include <cmath>
 
 #include "SFML/Graphics.hpp"
-#include "cfd_lib/headers/test.h"
+#include "cfd_lib/headers/container.hpp"
 
 // Graphics Settings
 const uint16_t Width = 1500u;
@@ -25,9 +25,7 @@ int main() {
     uint32_t frame_count = 0;
     std::deque<int32_t> frame_times;
     sf::Clock frame_timer;
-    printf("%f\n", goop());
-    Test *asd = new Test();
-    printf("%d\n\n", asd->sum());
+    auto *simulation_container = new Container({Width-100, Height-100}, 100);
 //---------------------------------------------------------
 // Draw Loop
     while(window.isOpen()){
@@ -38,9 +36,9 @@ int main() {
                 window.close();
             }
         }
-
+        simulation_container->step(1);
         window.clear();
-        // ...
+        simulation_container->render();
         window.display();
 
         // Frame Time Tracking
@@ -54,5 +52,7 @@ int main() {
             printf("Avg %f ms/frame over last %d frames\n", avg_duration, FrameAverage);
         }
     }
+
+    delete simulation_container;
     return 0;
 }
