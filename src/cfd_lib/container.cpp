@@ -4,7 +4,7 @@
 #include <math.h>
 #include <cstring>
 #include "headers/container.hpp"
-#include "utils.h"
+#include "utils.hpp"
 #include "physics.h"
 
 Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc) {
@@ -48,6 +48,10 @@ Container::~Container() {
     delete this->v_y_grid;
     delete this->prev_v_x_grid;
     delete this->prev_v_y_grid;
+}
+
+GridInfo Container::size_info() const{
+    return {this->x_cell_count, this->y_cell_count, this->total_cells};
 }
 
 int Container::pos_to_cell_index(sf::Vector2i pos) const{
@@ -103,7 +107,7 @@ void Container::step(float dt) {
         physics::BoundaryMode::Horizontal,
         &this->v_x_grid,
         &this->prev_v_x_grid,
-        this->total_cells,
+        this->size_info(),
         this->viscosity,
         dt,
         ITTER_COUNT
@@ -112,7 +116,7 @@ void Container::step(float dt) {
             physics::BoundaryMode::Vertical,
             &this->v_y_grid,
             &this->prev_v_y_grid,
-            this->total_cells,
+            this->size_info(),
             this->viscosity,
             dt,
             ITTER_COUNT
@@ -123,7 +127,7 @@ void Container::step(float dt) {
         &this->prev_v_y_grid,
         &this->v_x_grid,
         &this->v_y_grid,
-        this->total_cells,
+        this->size_info(),
         ITTER_COUNT
     );
 
@@ -133,7 +137,7 @@ void Container::step(float dt) {
         &this->prev_v_x_grid,
         &this->prev_v_x_grid,
         &this->prev_v_y_grid,
-        this->total_cells,
+        this->size_info(),
         dt
     );
     physics::advect(
@@ -142,7 +146,7 @@ void Container::step(float dt) {
         &this->prev_v_y_grid,
         &this->prev_v_x_grid,
         &this->prev_v_y_grid,
-        this->total_cells,
+        this->size_info(),
         dt
     );
 
@@ -151,7 +155,7 @@ void Container::step(float dt) {
             &this->prev_v_y_grid,
             &this->v_x_grid,
             &this->v_y_grid,
-            this->total_cells,
+            this->size_info(),
             ITTER_COUNT
     );
 
@@ -159,7 +163,7 @@ void Container::step(float dt) {
         physics::BoundaryMode::Density,
         &this->prev_density_grid,
         &this->density_grid,
-        this->total_cells,
+        this->size_info(),
         this->diffusion,
         dt,
         ITTER_COUNT
@@ -170,7 +174,7 @@ void Container::step(float dt) {
             &this->prev_density_grid,
             &this->v_x_grid,
             &this->v_y_grid,
-            this->total_cells,
+            this->size_info(),
             dt
     );
 }

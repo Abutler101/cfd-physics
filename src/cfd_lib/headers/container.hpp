@@ -8,6 +8,7 @@
 #include "SFML/Graphics.hpp"
 #include "SFML/System.hpp"
 #include "options.hpp"
+#include "utils.hpp"
 
 class Container{
     private:
@@ -37,6 +38,7 @@ class Container{
         int pos_to_cell_index(sf::Vector2i pos) const;
         void add_density(sf::Vector2i pos, float amount);
         void add_velocity(sf::Vector2i pos, sf::Vector2f velocity);
+        [[nodiscard]] GridInfo size_info() const;
 };
 
 #endif //CFD_PHYSICS_CONTAINER_HPP

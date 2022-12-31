@@ -2,7 +2,7 @@
 // Created by Alexis on 31/12/2022.
 //
 #include <cmath>
-#include "headers/utils.h"
+#include "headers/utils.hpp"
 uint8_t map_to_range(uint8_t i_start, uint8_t i_end, uint8_t o_start, uint8_t o_end, uint8_t value){
     uint8_t gradient = (o_end - o_start) / (i_end - i_start);
     return  o_start + gradient * (value - i_start);
@@ -38,4 +38,13 @@ sf::Color hsv(float hue, float saturation, float value, float alpha){
         case 5: return sf::Color(value*255, a * 255, b * 255, alpha);
         case 6: return sf::Color(value*255, c * 255, a * 255, alpha);
     }
+}
+
+int GridInfo::indx(int x, int y) const{
+    if(x<0){x=0;}
+    else if(x>this->row_size){x=this->row_size;}
+    if(y<0){y=0;}
+    else if(y>this->col_size){y=this->col_size;}
+
+    return (y*row_size) + x;
 }
