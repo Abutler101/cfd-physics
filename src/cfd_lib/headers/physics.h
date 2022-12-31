@@ -23,7 +23,7 @@ namespace physics {
 
     void enforce_boundaries(BoundaryMode bm, float grid[], GridInfo sizes);
 
-    void linear_solve(BoundaryMode bm, float grid[], float grid_0[], GridInfo sizes, float a, float c, int itters);
+    void linear_solve(BoundaryMode bm, float grid[], const float grid_0[], GridInfo sizes, float a, float c, int itters);
 }
 
 #endif //CFD_PHYSICS_PHYSICS_H

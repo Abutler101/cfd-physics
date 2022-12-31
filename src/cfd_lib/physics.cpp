@@ -10,7 +10,9 @@ namespace physics{
      * Diffuses the given value grid with the logic of flowing from
      * high to low
      */
-        //...
+        float a = dt * dampening * (sizes.row_size - 2) * (sizes.col_size - 2);
+        float c = 1 + (6 * a);
+        linear_solve(bm, *grid, *previous_grid, sizes, a, c, itters);
     }
 
     void project(float *v_x[], float *v_y[], float *prev[], float *divisor[], GridInfo sizes, int itters){
