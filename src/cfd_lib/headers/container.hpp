@@ -22,6 +22,7 @@ class Container{
         float viscosity;
 
         float *density_grid;
+        float *prev_density_grid;
         sf::Vector2f *velocity_grid;
         sf::Vector2f *prev_velocity_grid;
 

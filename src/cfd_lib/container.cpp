@@ -5,6 +5,7 @@
 #include <cstring>
 #include "headers/container.hpp"
 #include "utils.h"
+#include "physics.h"
 
 Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc) {
     // Container is a grid of square cells:
@@ -26,10 +27,12 @@ Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, floa
 
     //1D arrays store 2D grids row by row left -> right
     this->density_grid = new float[this->total_cells];
+    this->prev_density_grid = new float[this->total_cells];
     this->velocity_grid = new sf::Vector2f[this->total_cells];
     this->prev_velocity_grid = new sf::Vector2f[this->total_cells];
 
     memset(this->density_grid, 0, sizeof(float)*this->total_cells);
+    memset(this->prev_density_grid, 0, sizeof(float)*this->total_cells);
     memset(this->velocity_grid, 0, sizeof(sf::Vector2f)*this->total_cells);
     memset(this->prev_velocity_grid, 0, sizeof(sf::Vector2f)*this->total_cells);
 
@@ -89,7 +92,50 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
 }
 
 void Container::step(float dt) {
+    int ITTER_COUNT = 8;
+    physics::diffuse(
+        &this->prev_velocity_grid,
+        &this->velocity_grid,
+        this->total_cells,
+        this->viscosity,
+        dt,
+        ITTER_COUNT
+    );
+    physics::project(
+        &this->prev_velocity_grid,
+        &this->velocity_grid,
+        this->total_cells,
+        ITTER_COUNT
+    );
 
+    physics::advect(
+        &this->velocity_grid,
+        &this->prev_velocity_grid,
+        &this->prev_velocity_grid,
+        this->total_cells, dt
+    );
+
+    physics::project(
+        &this->velocity_grid,
+        &this->prev_velocity_grid,
+        this->total_cells,
+        ITTER_COUNT
+    );
+    physics::diffuse(
+        &this->prev_density_grid,
+        &this->density_grid,
+        this->total_cells,
+        this->diffusion,
+        dt,
+        ITTER_COUNT
+    );
+    physics::advect(
+        &this->density_grid,
+        &this->prev_density_grid,
+        &this->velocity_grid,
+        this->total_cells,
+        dt
+    );
 }
 
 void Container::add_density(sf::Vector2i pos, float amount) {
