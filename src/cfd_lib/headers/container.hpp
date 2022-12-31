@@ -32,7 +32,7 @@ class Container{
         void step(float dt);
         int pos_to_cell_index(sf::Vector2i pos);
         void add_density(sf::Vector2i pos, float amount);
-        void add_velocity(sf::Vector2i pos, sf::Vector2f velocity);
+        void add_velocity(sf::Vector2i pos, sf::Vector2i velocity);
 };
 
 #endif //CFD_PHYSICS_CONTAINER_HPP

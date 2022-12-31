@@ -43,17 +43,16 @@ int main() {
                         simulation_container->add_density(current_mouse_pos, 100);
                     }
                     break;
-                case sf::Event::MouseButtonReleased:
-                    if(event.mouseButton.button == sf::Mouse::Left){
-                        //
+                case sf::Event::MouseMoved:
+                    current_mouse_pos = {event.mouseMove.x, event.mouseMove.y};
+                    sf::Vector2i mouse_delta = current_mouse_pos-previous_mouse_pos;
+                    if(mouse_delta.x > 0 or mouse_delta.y > 0){
+                        simulation_container->add_velocity(previous_mouse_pos, mouse_delta);
                     }
+                    previous_mouse_pos = current_mouse_pos;
                     break;
             }
         }
-
-        // Mouse Tracking
-        current_mouse_pos = sf::Mouse::getPosition(window);
-        previous_mouse_pos = current_mouse_pos;
 
         simulation_container->step(1);
         window.clear();

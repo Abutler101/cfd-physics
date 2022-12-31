@@ -33,7 +33,7 @@ Container::~Container() {
     delete this->velocity_grid;
     delete this->prev_velocity_grid;
 }
-//
+
 int Container::pos_to_cell_index(sf::Vector2i pos){
     int coll = floor(static_cast<float>(pos.x) / this->cell_size);
     int row = floor(static_cast<float>(pos.y) / this->cell_size);
@@ -67,6 +67,7 @@ void Container::add_density(sf::Vector2i pos, float amount) {
     int target_cell = this->pos_to_cell_index(pos);
 }
 
-void Container::add_velocity(sf::Vector2i pos, sf::Vector2f velocity) {
-
+void Container::add_velocity(sf::Vector2i pos, sf::Vector2i velocity) {
+    int start_cell = this->pos_to_cell_index(pos);
+    printf("Velocity: (%d, %d)\n", velocity.x, velocity.y);
 }
