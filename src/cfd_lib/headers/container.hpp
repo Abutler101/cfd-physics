@@ -14,7 +14,8 @@ class Container{
         uint16_t height_raw;
         uint16_t x_cell_count;
         uint16_t y_cell_count;
-        float cell_size;
+        uint32_t total_cells;
+        uint16_t cell_size;
 
         float diffusion;
         float viscosity;
@@ -24,12 +25,14 @@ class Container{
         sf::Vector2f *prev_velocity_grid;
 
     public:
-        Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count);
+        Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc);
+        ~Container();
 
-        void render();
+        void render(sf::RenderWindow *window);
         void step(float dt);
-        void add_density(sf::Vector2f pos, float amount);
-        void add_velocity(sf::Vector2f pos, sf::Vector2f velocity);
+        int pos_to_cell_index(sf::Vector2i pos);
+        void add_density(sf::Vector2i pos, float amount);
+        void add_velocity(sf::Vector2i pos, sf::Vector2f velocity);
 };
 
 #endif //CFD_PHYSICS_CONTAINER_HPP
