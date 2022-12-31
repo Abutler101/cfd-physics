@@ -2,7 +2,9 @@
 // Created by Alexis on 31/12/2022.
 //
 #include <math.h>
+#include <cstring>
 #include "headers/container.hpp"
+#include "utils.h"
 
 Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc) {
     // Container is a grid of square cells:
@@ -26,6 +28,11 @@ Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, floa
     this->density_grid = new float[this->total_cells];
     this->velocity_grid = new sf::Vector2f[this->total_cells];
     this->prev_velocity_grid = new sf::Vector2f[this->total_cells];
+
+    memset(this->density_grid, 0, sizeof(float)*this->total_cells);
+    memset(this->velocity_grid, 0, sizeof(sf::Vector2f)*this->total_cells);
+    memset(this->prev_velocity_grid, 0, sizeof(sf::Vector2f)*this->total_cells);
+
 };
 
 Container::~Container() {
@@ -34,25 +41,47 @@ Container::~Container() {
     delete this->prev_velocity_grid;
 }
 
-int Container::pos_to_cell_index(sf::Vector2i pos){
+int Container::pos_to_cell_index(sf::Vector2i pos) const{
     int coll = floor(static_cast<float>(pos.x) / this->cell_size);
     int row = floor(static_cast<float>(pos.y) / this->cell_size);
     // Deal with any overhang
     if(coll >= this->x_cell_count){coll-=1;}
     if(row >= this->y_cell_count){row-=1;}
     int index = (row * this->x_cell_count) + coll;
-    printf("RawPos: (%d, %d) -> CellRef: (%d, %d) -> indx: %d\n", pos.x, pos.y, coll, row, index);
+    //printf("RawPos: (%d, %d) -> CellRef: (%d, %d) -> indx: %d\n", pos.x, pos.y, coll, row, index);
     return index;
 }
 
-void Container::render(sf::RenderWindow *window) {
+void Container::render(sf::RenderWindow *window, RenderOptions *options) {
     float casted_size = static_cast<float>(this->cell_size);
     for (int i = 0; i < this->x_cell_count; ++i) {
         for (int j = 0; j < this->y_cell_count; ++j) {
+            int cell_index = (j * this->x_cell_count) + i;
             auto cell_shape = sf::RectangleShape({casted_size, casted_size});
-            cell_shape.setFillColor(sf::Color::Transparent);
-            cell_shape.setOutlineColor(sf::Color(255, 255, 255, 128));
-            cell_shape.setOutlineThickness(1);
+            uint8_t mapped_density;
+            if(density_grid[cell_index] > 255){mapped_density=255;}
+            else{mapped_density=floor(density_grid[cell_index]);}
+            sf::Color cell_color = sf::Color();
+            switch (options->get_color_mode()) {
+                case ColorMode::Default:
+                    cell_color = sf::Color(255, 255, 255, mapped_density);
+                    cell_shape.setFillColor(cell_color);
+                    break;
+                case ColorMode::Velocity:
+                    cell_color.r = map_to_range(-5.f,5.f, 0.f, 255.f, this->velocity_grid[cell_index].x);
+                    cell_color.g = map_to_range(-5.f,5.f, 0.f, 255.f, this->velocity_grid[cell_index].y);
+                    cell_color.b = 255;
+                    cell_shape.setFillColor(cell_color);
+                    break;
+                case ColorMode::Hsb:
+                    cell_color = hsv(density_grid[cell_index], 1, 1, 255);
+                    cell_shape.setFillColor(cell_color);
+                    break;
+            }
+            if(options->get_draw_grid()){
+                cell_shape.setOutlineColor(sf::Color(0, 255, 0, 191));
+                cell_shape.setOutlineThickness(1);
+            }
             cell_shape.setPosition({i*casted_size, j*casted_size});
             window->draw(cell_shape);
         }
@@ -65,9 +94,10 @@ void Container::step(float dt) {
 
 void Container::add_density(sf::Vector2i pos, float amount) {
     int target_cell = this->pos_to_cell_index(pos);
+    this->density_grid[target_cell] += amount;
 }
 
-void Container::add_velocity(sf::Vector2i pos, sf::Vector2i velocity) {
+void Container::add_velocity(sf::Vector2i pos, sf::Vector2f velocity) {
     int start_cell = this->pos_to_cell_index(pos);
-    printf("Velocity: (%d, %d)\n", velocity.x, velocity.y);
+    this->velocity_grid[start_cell] += velocity;
 }
