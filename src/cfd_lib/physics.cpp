@@ -4,37 +4,24 @@
 #include "headers/physics.h"
 
 namespace physics{
-    void diffuse(float *grid[], float *previous_grid[], uint32_t size, float dampening, float dt, int itters){
+    void diffuse(BoundaryMode bm, float *grid[], float *previous_grid[], uint32_t size, float dampening, float dt, int itters){
     /*
      * Diffuses the given value grid with the logic of flowing from
      * high to low
      */
         //...
     }
-    void diffuse(sf::Vector2f *grid[], sf::Vector2f *previous_grid[], uint32_t size, float dampening, float dt, int itters){
-        /*
-         * Diffuses the given value grid with the logic of flowing from
-         * high to low
-         */
-        //...
-    }
 
-    void project(sf::Vector2f *grid[], sf::Vector2f *secondary_grid[], uint32_t size, int itters){
+    void project(float *v_x[], float *v_y[], float *prev[], float *divisor[], uint32_t size, int itters){
     /*
-     * Balances grid values such that the fluid remains incompressible &
+     * Balances velocities such that the fluid remains incompressible &
      * density is neither created nor destroyed by the solver
      */
         //...
 
     }
 
-    void advect(float *grid[], float *previous_grid[], sf::Vector2f *velocity[], uint32_t size, float dt){
-    /*
-     * Distributes the given value grid based on the given velocity grid
-     */
-        //...
-    }
-    void advect(sf::Vector2f *grid[], sf::Vector2f *previous_grid[], sf::Vector2f *velocity[], uint32_t size, float dt){
+    void advect(BoundaryMode bm, float *grid[], float *prev_grid[], float *veloc_x[], float *veloc_y[], uint32_t size, float dt){
     /*
      * Distributes the given value grid based on the given velocity grid
      */

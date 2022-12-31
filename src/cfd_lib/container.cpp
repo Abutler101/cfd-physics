@@ -28,20 +28,26 @@ Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, floa
     //1D arrays store 2D grids row by row left -> right
     this->density_grid = new float[this->total_cells];
     this->prev_density_grid = new float[this->total_cells];
-    this->velocity_grid = new sf::Vector2f[this->total_cells];
-    this->prev_velocity_grid = new sf::Vector2f[this->total_cells];
+    this->v_x_grid = new float[this->total_cells];
+    this->v_y_grid = new float[this->total_cells];
+    this->prev_v_x_grid = new float[this->total_cells];
+    this->prev_v_y_grid = new float[this->total_cells];
 
     memset(this->density_grid, 0, sizeof(float)*this->total_cells);
     memset(this->prev_density_grid, 0, sizeof(float)*this->total_cells);
-    memset(this->velocity_grid, 0, sizeof(sf::Vector2f)*this->total_cells);
-    memset(this->prev_velocity_grid, 0, sizeof(sf::Vector2f)*this->total_cells);
+    memset(this->v_x_grid, 0, sizeof(float)*this->total_cells);
+    memset(this->v_y_grid, 0, sizeof(float)*this->total_cells);
+    memset(this->prev_v_x_grid, 0, sizeof(float)*this->total_cells);
+    memset(this->prev_v_y_grid, 0, sizeof(float)*this->total_cells);
 
 };
 
 Container::~Container() {
     delete this->density_grid;
-    delete this->velocity_grid;
-    delete this->prev_velocity_grid;
+    delete this->v_x_grid;
+    delete this->v_y_grid;
+    delete this->prev_v_x_grid;
+    delete this->prev_v_y_grid;
 }
 
 int Container::pos_to_cell_index(sf::Vector2i pos) const{
@@ -71,8 +77,8 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
                     cell_shape.setFillColor(cell_color);
                     break;
                 case ColorMode::Velocity:
-                    cell_color.r = map_to_range(-5.f,5.f, 0.f, 255.f, this->velocity_grid[cell_index].x);
-                    cell_color.g = map_to_range(-5.f,5.f, 0.f, 255.f, this->velocity_grid[cell_index].y);
+                    cell_color.r = map_to_range(-5.f,5.f, 0.f, 255.f, this->v_x_grid[cell_index]);
+                    cell_color.g = map_to_range(-5.f,5.f, 0.f, 255.f, this->v_y_grid[cell_index]);
                     cell_color.b = 255;
                     cell_shape.setFillColor(cell_color);
                     break;
@@ -94,34 +100,63 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
 void Container::step(float dt) {
     int ITTER_COUNT = 8;
     physics::diffuse(
-        &this->prev_velocity_grid,
-        &this->velocity_grid,
+        physics::BoundaryMode::Horizontal,
+        &this->v_x_grid,
+        &this->prev_v_x_grid,
         this->total_cells,
         this->viscosity,
         dt,
         ITTER_COUNT
     );
+    physics::diffuse(
+            physics::BoundaryMode::Vertical,
+            &this->v_y_grid,
+            &this->prev_v_y_grid,
+            this->total_cells,
+            this->viscosity,
+            dt,
+            ITTER_COUNT
+    );
+
     physics::project(
-        &this->prev_velocity_grid,
-        &this->velocity_grid,
+        &this->prev_v_x_grid,
+        &this->prev_v_y_grid,
+        &this->v_x_grid,
+        &this->v_y_grid,
         this->total_cells,
         ITTER_COUNT
     );
 
     physics::advect(
-        &this->velocity_grid,
-        &this->prev_velocity_grid,
-        &this->prev_velocity_grid,
-        this->total_cells, dt
+        physics::BoundaryMode::Horizontal,
+        &this->v_x_grid,
+        &this->prev_v_x_grid,
+        &this->prev_v_x_grid,
+        &this->prev_v_y_grid,
+        this->total_cells,
+        dt
+    );
+    physics::advect(
+        physics::BoundaryMode::Vertical,
+        &this->v_y_grid,
+        &this->prev_v_y_grid,
+        &this->prev_v_x_grid,
+        &this->prev_v_y_grid,
+        this->total_cells,
+        dt
     );
 
     physics::project(
-        &this->velocity_grid,
-        &this->prev_velocity_grid,
-        this->total_cells,
-        ITTER_COUNT
+            &this->prev_v_x_grid,
+            &this->prev_v_y_grid,
+            &this->v_x_grid,
+            &this->v_y_grid,
+            this->total_cells,
+            ITTER_COUNT
     );
+
     physics::diffuse(
+        physics::BoundaryMode::Density,
         &this->prev_density_grid,
         &this->density_grid,
         this->total_cells,
@@ -130,11 +165,13 @@ void Container::step(float dt) {
         ITTER_COUNT
     );
     physics::advect(
-        &this->density_grid,
-        &this->prev_density_grid,
-        &this->velocity_grid,
-        this->total_cells,
-        dt
+            physics::BoundaryMode::Density,
+            &this->density_grid,
+            &this->prev_density_grid,
+            &this->v_x_grid,
+            &this->v_y_grid,
+            this->total_cells,
+            dt
     );
 }
 
@@ -145,5 +182,6 @@ void Container::add_density(sf::Vector2i pos, float amount) {
 
 void Container::add_velocity(sf::Vector2i pos, sf::Vector2f velocity) {
     int start_cell = this->pos_to_cell_index(pos);
-    this->velocity_grid[start_cell] += velocity;
+    this->v_x_grid[start_cell] += velocity.x;
+    this->v_y_grid[start_cell] += velocity.y;
 }

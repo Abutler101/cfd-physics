@@ -23,8 +23,10 @@ class Container{
 
         float *density_grid;
         float *prev_density_grid;
-        sf::Vector2f *velocity_grid;
-        sf::Vector2f *prev_velocity_grid;
+        float *v_x_grid;
+        float *v_y_grid;
+        float *prev_v_x_grid;
+        float *prev_v_y_grid;
 
     public:
         Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc);

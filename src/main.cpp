@@ -52,7 +52,7 @@ int main() {
                     if(mouse_delta.x > 0 or mouse_delta.y > 0){
                         simulation_container->add_velocity(
                             previous_mouse_pos,
-                            {static_cast<float>(mouse_delta.x), static_cast<float>(mouse_delta.y)}
+                            {static_cast<float>(mouse_delta.x) / 10, static_cast<float>(mouse_delta.y) / 10}
                         );
                     }
                     previous_mouse_pos = current_mouse_pos;
