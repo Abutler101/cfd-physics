@@ -15,7 +15,7 @@
 // Graphics Settings
 const uint16_t Width = 800u;
 const uint16_t Height = 800u;
-const int FrameRate = 1;
+const int FrameRate = 30;
 const int FrameAverage = 500;
 
 int main() {
@@ -30,7 +30,7 @@ int main() {
     sf::Vector2i previous_mouse_pos = sf::Mouse::getPosition(window);
     sf::Vector2i mouse_delta = current_mouse_pos-previous_mouse_pos;
     auto *options = new RenderOptions(true);
-    auto *simulation_container = new Container({Width, Height}, 80, 0.2f, 0.3f); //Cell count 6400
+    auto *simulation_container = new Container({Width, Height}, 6400, 0.2f, 1e-7);
 //---------------------------------------------------------
 // Draw Loop
     while(window.isOpen()){
@@ -43,7 +43,7 @@ int main() {
                     break;
                 case sf::Event::MouseButtonPressed:
                     if(event.mouseButton.button == sf::Mouse::Left){
-                        simulation_container->add_density(current_mouse_pos, 50);
+                        simulation_container->add_density(current_mouse_pos, 250);
                     }
                     break;
                 case sf::Event::MouseMoved:

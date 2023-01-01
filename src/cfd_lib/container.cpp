@@ -101,7 +101,7 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
 }
 
 void Container::step(float dt) {
-    int ITTER_COUNT = 16;
+    int ITTER_COUNT = 64;
     physics::diffuse(
         physics::BoundaryMode::Horizontal,
         this->prev_v_x_grid,
