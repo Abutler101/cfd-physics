@@ -38,6 +38,7 @@ class Container{
         int pos_to_cell_index(sf::Vector2i pos) const;
         void add_density(sf::Vector2i pos, float amount);
         void add_velocity(sf::Vector2i pos, sf::Vector2f velocity);
+        void fade_density();
         [[nodiscard]] GridInfo size_info() const;
 };
 

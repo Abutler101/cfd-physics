@@ -73,6 +73,7 @@ int main() {
         simulation_container->step(1);
         window.clear();
         simulation_container->render(&window, options);
+        simulation_container->fade_density();
         window.display();
 
         // Frame Time Tracking

@@ -101,7 +101,7 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
 }
 
 void Container::step(float dt) {
-    int ITTER_COUNT = 64;
+    int ITTER_COUNT = 16;
     physics::diffuse(
         physics::BoundaryMode::Horizontal,
         this->prev_v_x_grid,
@@ -187,4 +187,11 @@ void Container::add_velocity(sf::Vector2i pos, sf::Vector2f velocity) {
     int start_cell = this->pos_to_cell_index(pos);
     this->v_x_grid[start_cell] += velocity.x;
     this->v_y_grid[start_cell] += velocity.y;
+}
+
+void Container::fade_density(){
+    for (int i = 0; i < this->total_cells; i++) {
+        float d = this->density_grid[i];
+        this->density_grid[i] = (d - 0.05f < 0) ? 0 : d - 0.05f;
+    }
 }
