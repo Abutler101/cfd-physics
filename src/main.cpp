@@ -30,7 +30,7 @@ int main() {
     sf::Vector2i previous_mouse_pos = sf::Mouse::getPosition(window);
     sf::Vector2i mouse_delta = current_mouse_pos-previous_mouse_pos;
     auto *options = new RenderOptions(true);
-    auto *simulation_container = new Container({Width, Height}, 6400, 0.2f, 0.00001f);
+    auto *simulation_container = new Container({Width, Height}, 80, 0.2f, 1e-7); //Cell count 6400
 //---------------------------------------------------------
 // Draw Loop
     while(window.isOpen()){

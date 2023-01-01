@@ -40,6 +40,8 @@ Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, floa
     memset(this->prev_v_x_grid, 0, sizeof(float)*this->total_cells);
     memset(this->prev_v_y_grid, 0, sizeof(float)*this->total_cells);
 
+    this->v_x_grid[5] = 4;
+    this->density_grid[5] = 100;
 };
 
 Container::~Container() {
@@ -102,80 +104,80 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
 }
 
 void Container::step(float dt) {
-    int ITTER_COUNT = 8;
+    int ITTER_COUNT = 16;
     physics::diffuse(
         physics::BoundaryMode::Horizontal,
-        &this->v_x_grid,
-        &this->prev_v_x_grid,
+        this->v_x_grid,
+        this->prev_v_x_grid,
         this->size_info(),
         this->viscosity,
         dt,
         ITTER_COUNT
     );
     physics::diffuse(
-            physics::BoundaryMode::Vertical,
-            &this->v_y_grid,
-            &this->prev_v_y_grid,
-            this->size_info(),
-            this->viscosity,
-            dt,
-            ITTER_COUNT
+        physics::BoundaryMode::Vertical,
+        this->v_y_grid,
+        this->prev_v_y_grid,
+        this->size_info(),
+        this->viscosity,
+        dt,
+        ITTER_COUNT
     );
 
     physics::project(
-        &this->prev_v_x_grid,
-        &this->prev_v_y_grid,
-        &this->v_x_grid,
-        &this->v_y_grid,
+        this->prev_v_x_grid,
+        this->prev_v_y_grid,
+        this->v_x_grid,
+        this->v_y_grid,
         this->size_info(),
         ITTER_COUNT
     );
 
     physics::advect(
         physics::BoundaryMode::Horizontal,
-        &this->v_x_grid,
-        &this->prev_v_x_grid,
-        &this->prev_v_x_grid,
-        &this->prev_v_y_grid,
+        this->v_x_grid,
+        this->prev_v_x_grid,
+        this->prev_v_x_grid,
+        this->prev_v_y_grid,
         this->size_info(),
         dt
     );
     physics::advect(
         physics::BoundaryMode::Vertical,
-        &this->v_y_grid,
-        &this->prev_v_y_grid,
-        &this->prev_v_x_grid,
-        &this->prev_v_y_grid,
+        this->v_y_grid,
+        this->prev_v_y_grid,
+        this->prev_v_x_grid,
+        this->prev_v_y_grid,
         this->size_info(),
         dt
     );
 
     physics::project(
-            &this->prev_v_x_grid,
-            &this->prev_v_y_grid,
-            &this->v_x_grid,
-            &this->v_y_grid,
-            this->size_info(),
-            ITTER_COUNT
+        this->prev_v_x_grid,
+        this->prev_v_y_grid,
+        this->v_x_grid,
+        this->v_y_grid,
+        this->size_info(),
+        ITTER_COUNT
     );
 
     physics::diffuse(
         physics::BoundaryMode::Density,
-        &this->prev_density_grid,
-        &this->density_grid,
+        this->prev_density_grid,
+        this->density_grid,
         this->size_info(),
         this->diffusion,
         dt,
         ITTER_COUNT
     );
     physics::advect(
-            physics::BoundaryMode::Density,
-            &this->density_grid,
-            &this->prev_density_grid,
-            &this->v_x_grid,
-            &this->v_y_grid,
-            this->size_info(),
-            dt
+        physics::BoundaryMode::Density,
+        this->density_grid,
+        this->prev_density_grid,
+        this->v_x_grid,
+        this->v_y_grid,
+        this->size_info(),
+        dt
     );
 }
 
