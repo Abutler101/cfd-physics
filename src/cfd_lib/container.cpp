@@ -104,8 +104,8 @@ void Container::step(float dt) {
     int ITTER_COUNT = 16;
     physics::diffuse(
         physics::BoundaryMode::Horizontal,
-        this->v_x_grid,
         this->prev_v_x_grid,
+        this->v_x_grid,
         this->size_info(),
         this->viscosity,
         dt,
@@ -113,8 +113,8 @@ void Container::step(float dt) {
     );
     physics::diffuse(
         physics::BoundaryMode::Vertical,
-        this->v_y_grid,
         this->prev_v_y_grid,
+        this->v_y_grid,
         this->size_info(),
         this->viscosity,
         dt,
@@ -150,10 +150,10 @@ void Container::step(float dt) {
     );
 
     physics::project(
-        this->prev_v_x_grid,
-        this->prev_v_y_grid,
         this->v_x_grid,
         this->v_y_grid,
+        this->prev_v_x_grid,
+        this->prev_v_y_grid,
         this->size_info(),
         ITTER_COUNT
     );
