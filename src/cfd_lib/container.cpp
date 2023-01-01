@@ -39,9 +39,6 @@ Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, floa
     memset(this->v_y_grid, 0, sizeof(float)*this->total_cells);
     memset(this->prev_v_x_grid, 0, sizeof(float)*this->total_cells);
     memset(this->prev_v_y_grid, 0, sizeof(float)*this->total_cells);
-
-    this->v_x_grid[5] = 4;
-    this->density_grid[5] = 100;
 };
 
 Container::~Container() {
