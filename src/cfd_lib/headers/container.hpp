@@ -12,12 +12,12 @@
 
 class Container{
     private:
-        uint16_t width_raw;
-        uint16_t height_raw;
-        uint16_t x_cell_count;
-        uint16_t y_cell_count;
-        uint32_t total_cells;
-        uint16_t cell_size;
+        int width_raw;
+        int height_raw;
+        int x_cell_count;
+        int y_cell_count;
+        int total_cells;
+        int cell_size;
 
         float diffusion;
         float viscosity;
@@ -30,7 +30,7 @@ class Container{
         float *prev_v_y_grid;
 
     public:
-        Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc);
+        Container(sf::Vector2<int> dimensions, int cell_count, float diff, float visc);
         ~Container();
 
         void render(sf::RenderWindow *window, RenderOptions *options);

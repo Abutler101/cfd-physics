@@ -3,8 +3,8 @@
 //
 #include <cmath>
 #include "headers/utils.hpp"
-uint8_t map_to_range(uint8_t i_start, uint8_t i_end, uint8_t o_start, uint8_t o_end, uint8_t value){
-    uint8_t gradient = (o_end - o_start) / (i_end - i_start);
+int map_to_range(int i_start, int i_end, int o_start, int o_end, int value){
+    int gradient = (o_end - o_start) / (i_end - i_start);
     return  o_start + gradient * (value - i_start);
 }
 

@@ -7,13 +7,13 @@
 #include "utils.hpp"
 #include "physics.h"
 
-Container::Container(sf::Vector2<uint16_t> dimensions, uint64_t cell_count, float diff, float visc) {
+Container::Container(sf::Vector2<int> dimensions, int cell_count, float diff, float visc) {
     // Container is a grid of square cells:
     // higher cell count -> smaller cells-> higher resolution simulation
     // likely won't create cell_count number of cells due to geometric limits
     this->width_raw = dimensions.x;
     this->height_raw = dimensions.y;
-    uint64_t area = this->width_raw * this->height_raw;
+    int area = this->width_raw * this->height_raw;
     float cell_area = static_cast<float>(area) / static_cast<float>(cell_count);
 
     this->cell_size = floor(pow(cell_area, 0.5f));
@@ -70,7 +70,7 @@ void Container::render(sf::RenderWindow *window, RenderOptions *options) {
         for (int j = 0; j < this->y_cell_count; ++j) {
             int cell_index = (j * this->x_cell_count) + i;
             auto cell_shape = sf::RectangleShape({casted_size, casted_size});
-            uint8_t mapped_density;
+            int mapped_density;
             if(density_grid[cell_index] > 255){mapped_density=255;}
             else{mapped_density=floor(density_grid[cell_index]);}
             sf::Color cell_color = sf::Color();

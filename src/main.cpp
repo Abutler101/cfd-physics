@@ -13,8 +13,8 @@
 #include "cfd_lib/headers/options.hpp"
 
 // Graphics Settings
-const uint16_t Width = 800u;
-const uint16_t Height = 800u;
+const int Width = 800;
+const int Height = 800;
 const int FrameRate = 30;
 const int FrameAverage = 500;
 
@@ -23,7 +23,7 @@ int main() {
 // Window Setup
     auto window = sf::RenderWindow{{Width, Height}, "3D Physics In 2D", sf::Style::Close};
     window.setFramerateLimit(FrameRate);
-    uint32_t frame_count = 0;
+    int frame_count = 0;
     std::deque<int32_t> frame_times;
     sf::Clock frame_timer;
     sf::Vector2i current_mouse_pos = sf::Mouse::getPosition(window);
