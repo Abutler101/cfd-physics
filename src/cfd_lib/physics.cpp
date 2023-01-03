@@ -177,8 +177,7 @@ namespace physics{
                     int index = sizes.indx(i,j);
                     float neighbourhood = (
                         grid[sizes.indx(i+1,j)] + grid[sizes.indx(i-1,j)] +
-                        grid[sizes.indx(i,j+1)] + grid[sizes.indx(i,j-1)] +
-                        grid[index] + grid[index] // Not sure if these are needed
+                        grid[sizes.indx(i,j+1)] + grid[sizes.indx(i,j-1)]
                     );
                     grid[index] = (grid_0[index] + a * neighbourhood) * c_reciprical;
                 }
